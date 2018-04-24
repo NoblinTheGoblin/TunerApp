@@ -6,7 +6,7 @@ TunerGUI::TunerGUI(QWidget *parent) : QWidget(parent), ui(new Ui::TunerGUI), obj
     ui->setupUi(this);
 
     object = new LAUAudioObject();
-    connect(object, SIGNAL(emitBuffer(float*,int)), this, SLOT(onUpdateBuffer(float*,int)));
+    connect(object, SIGNAL(emitBuffer(float *, int)), this, SLOT(onUpdateBuffer(float *, int)));
 }
 
 TunerGUI::~TunerGUI()
@@ -22,13 +22,13 @@ void TunerGUI::setupPlot()
     ui->InputGraph->xAxis->setRange(0, 1025);
     ui->InputGraph->yAxis->setRange(-2, 2);
 
-    ui->PSDGraph->xAxis->setRange(0,1024);
+    ui->PSDGraph->xAxis->setRange(0, 1024);
     ui->PSDGraph->yAxis->setRange(0, 3);
 
 
     QVector<double> time(1024);
 
-    for(int i = 0; i < 1024; i++){
+    for (int i = 0; i < 1024; i++) {
         time[i] = i;
     }
 
@@ -48,8 +48,8 @@ void TunerGUI::plotPSD()
 
 QVector<float> TunerGUI::getFFT()
 {
-    float * outputBuffer;
-    float * PSD;
+    float *outputBuffer;
+    float *PSD;
 
     fftw_plan p;
 
@@ -58,28 +58,18 @@ QVector<float> TunerGUI::getFFT()
     fftw_execute(p);
 
     //for(int i = 0; i < (1024/2 + 1); i++){
-        //PSD[i] = (outputBuffer[i]*outputBuffer[i] + outputBuffer[1024/2 +1 -i] * outputBuffer[1024/2 +1 -i]);
+    //PSD[i] = (outputBuffer[i]*outputBuffer[i] + outputBuffer[1024/2 +1 -i] * outputBuffer[1024/2 +1 -i]);
     //}
 
 }
 
-float * TunerGUI::getWindowFunc()
+float *TunerGUI::getWindowFunc()
 {
     int windowSize = 1024;
 
-    for(int i = 0; i < windowSize; i++){
-        windowedInput[i] = 0.5 * (1 - qCos((i*2*M_PI)/1023)) * (double)inputBuffer[i];
+    for (int i = 0; i < windowSize; i++) {
+        windowedInput[i] = 0.5 * (1 - qCos((i * 2 * M_PI) / 1023)) * (double)inputBuffer[i];
     }
-}
-
-void TunerGUI::on_closeButton_clicked()
-{
-    TunerGUI::close();
-}
-
-void TunerGUI::on_startButton_clicked()
-{
-
 }
 
 void TunerGUI::onUpdateBuffer(float *buffer, int samples)
@@ -87,7 +77,7 @@ void TunerGUI::onUpdateBuffer(float *buffer, int samples)
     TunerGUI::inputBuffer = buffer;
     TunerGUI::samplesFromMic = samples;
 
-    qDebug() << inputBuffer[0];
+    //qDebug() << inputBuffer[0] << samples;
 
     TunerGUI::setupPlot();
     ui->InputGraph->replot();

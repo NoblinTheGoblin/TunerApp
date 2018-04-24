@@ -26,6 +26,10 @@ public:
     ~LAUAudioObject();
 
     bool isValid();
+    void setWindowSize(int val)
+    {
+        windowSize = val;
+    }
 
 public slots:
     void onStart();
@@ -34,7 +38,9 @@ public slots:
 private:
     float *buffer;
     short *conversionBuffer;
-    int sampleCounter;
+    int windowSize;
+    int bufferInPointer;
+    int bufferOtPointer;
     QAudioFormat format;
     QAudioDeviceInfo audioDeviceInfo;
     QAudioInput *audioInput;

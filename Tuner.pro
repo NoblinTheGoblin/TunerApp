@@ -11,6 +11,7 @@ TEMPLATE = app
 
 unix:macx{
     INCLUDEPATH += /usr/local/include
+    DEPENDPATH  += /usr/local/include
     LIBS        += -L/usr/local/lib -lfftw3
 }
 

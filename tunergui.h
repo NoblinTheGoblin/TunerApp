@@ -11,8 +11,9 @@
 
 using namespace std;
 
-namespace Ui {
-class TunerGUI;
+namespace Ui
+{
+    class TunerGUI;
 }
 
 class TunerGUI : public QWidget
@@ -26,20 +27,16 @@ public:
     void setupPlot();
     void plotPSD();
     QVector<float> getFFT();
-    float * getWindowFunc();
+    float *getWindowFunc();
     float getPitch();
 
 public slots:
     void onUpdateBuffer(float *buffer, int samples);
 
-private slots:
-    void on_closeButton_clicked();
-
-    void on_startButton_clicked();
-
 protected:
-    void showEvent(QShowEvent*){
-        if (object && object->isValid()){
+    void showEvent(QShowEvent *)
+    {
+        if (object && object->isValid()) {
             object->onStart();
         }
     }
