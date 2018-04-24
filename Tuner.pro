@@ -4,23 +4,29 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += multimedia widgets printsupport
+QT       += core gui widgets multimedia opengl printsupport
 
 TARGET = Tuner
 TEMPLATE = app
 
-INCLUDEPATH += "/home/noblinthegoblin/fftw3/fftw-3.3.7"
+unix:macx{
+    INCLUDEPATH += /usr/local/include
+    LIBS        += -L/usr/local/lib -lfftw3
+}
 
-SOURCES += main.cpp\
-        tunergui.cpp \
-    qcustomplot.cpp \
-    ../../../Lau/RuffnerAudioFilter/LAUAudioFilter/lauaudioobject.cpp
+unix:!macx{
+    INCLUDEPATH += "/home/noblinthegoblin/fftw3/fftw-3.3.7"
+    LIBS     += -lfftw3
+}
+
+SOURCES  += main.cpp\
+            tunergui.cpp \
+            qcustomplot.cpp \
+            lauaudioobject.cpp
 
 HEADERS  += tunergui.h \
-    qcustomplot.h \
-    ../../../Lau/RuffnerAudioFilter/LAUAudioFilter/lauaudioobject.h
+            qcustomplot.h \
+            lauaudioobject.h
 
 FORMS    += tunergui.ui
 
