@@ -23,11 +23,13 @@ unix:!macx{
 SOURCES  += main.cpp\
             tunergui.cpp \
             qcustomplot.cpp \
-            lauaudioobject.cpp
+            lauaudioobject.cpp \
+    laufftobject.cpp
 
 HEADERS  += tunergui.h \
             qcustomplot.h \
-            lauaudioobject.h
+            lauaudioobject.h \
+    laufftobject.h
 
 FORMS    += tunergui.ui
 

@@ -127,7 +127,7 @@ void LAUAudioObject::onNotify()
         // SEND THE JUST RECEIVED SAMPLES TO THE USER FOR PROCESSING
         // IN BLOCKS OF LENGTH EQUAL TO THE WINDOWSIZE
         while ((bufferOtPointer + windowSize) < bufferInPointer) {
-            emit emitBuffer(&buffer[bufferOtPointer], windowSize);
+            emit emitUpdateBuffer(&buffer[bufferOtPointer], windowSize);
             bufferOtPointer += windowSize;
         }
 

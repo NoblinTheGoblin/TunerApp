@@ -6,6 +6,7 @@ TunerGUI::TunerGUI(QWidget *parent) : QWidget(parent), ui(new Ui::TunerGUI), obj
     ui->setupUi(this);
 
     object = new LAUAudioObject();
+    object->setWindowSize(1024);
     connect(object, SIGNAL(emitBuffer(float *, int)), this, SLOT(onUpdateBuffer(float *, int)));
 }
 
@@ -74,12 +75,10 @@ float *TunerGUI::getWindowFunc()
 
 void TunerGUI::onUpdateBuffer(float *buffer, int samples)
 {
-    TunerGUI::inputBuffer = buffer;
-    TunerGUI::samplesFromMic = samples;
+    inputBuffer = buffer;
+    samplesFromMic = samples;
 
-    //qDebug() << inputBuffer[0] << samples;
-
-    TunerGUI::setupPlot();
+    setupPlot();
     ui->InputGraph->replot();
 }
 

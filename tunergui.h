@@ -7,7 +7,9 @@
 #include <vector>
 #include <math.h>
 #include <fftw3.h>
+
 #include "lauaudioobject.h"
+#include "laufftobject.h"
 
 using namespace std;
 
@@ -51,6 +53,9 @@ private:
     QVector<double> windowedData;
     QVector<float> PSDdata;
     float frequency;
+
+signals:
+    void emitUpdateBuffer(float *buffer, int samples);
 };
 
 #endif // TUNERGUI_H
