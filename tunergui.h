@@ -46,6 +46,7 @@ protected:
 private:
     Ui::TunerGUI *ui;
     LAUAudioObject *object;
+    LAUFFTObject *fftObject;
     float *inputBuffer;
     int samplesFromMic;
     double *FFTdata;

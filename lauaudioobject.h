@@ -47,7 +47,7 @@ private:
     QIODevice *audioDevice;
 
 signals:
-    void emitBuffer(float *buffer, int samples);
+    void emitUpdateBuffer(float *buffer, int samples);
 };
 
 #endif // LAUAUDIOOBJECT_H

@@ -7,7 +7,13 @@ TunerGUI::TunerGUI(QWidget *parent) : QWidget(parent), ui(new Ui::TunerGUI), obj
 
     object = new LAUAudioObject();
     object->setWindowSize(1024);
-    connect(object, SIGNAL(emitBuffer(float *, int)), this, SLOT(onUpdateBuffer(float *, int)));
+
+    fftObject = new LAUFFTObject();
+    fftObject->setWindow(LAUFFTObject::WindowOne);
+    fftObject->setWindowSize(1024);
+
+    connect(object, SIGNAL(emitUpdateBuffer(float *, int)), fftObject, SLOT(onUpdateBuffer(float *, int)));
+    connect(fftObject, SIGNAL(emitUpdateBuffer(float *, int)), this, SLOT(onUpdateBuffer(float *, int)));
 }
 
 TunerGUI::~TunerGUI()
@@ -75,6 +81,7 @@ float *TunerGUI::getWindowFunc()
 
 void TunerGUI::onUpdateBuffer(float *buffer, int samples)
 {
+    qDebug() << "LOVE IT" << samples;
     inputBuffer = buffer;
     samplesFromMic = samples;
 
