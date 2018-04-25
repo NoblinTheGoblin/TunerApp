@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui widgets multimedia opengl printsupport
+QMAKE_CXXFLAGS += -std=c++0x
 
 TARGET = Tuner
 TEMPLATE = app
