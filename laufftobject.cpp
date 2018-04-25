@@ -28,15 +28,15 @@ void LAUFFTObject::setWindow(Window wnd)
     // STORE THE CURRENT WINDOW IN THE WINDOW BUFFER
     if (window == WindowOne) {
         for (int n = 0; n < windowSize; n++) {
-            wBuffer[n] = 0.0;
+            wBuffer[n] = 1.0;
         }
     } else if (window == WindowTwo) {
         for (int n = 0; n < windowSize; n++) {
-            wBuffer[n] = 0.0;
+            wBuffer[n] = 1.0;
         }
     } else if (window == WindowThree) {
         for (int n = 0; n < windowSize; n++) {
-            wBuffer[n] = 0.0;
+            wBuffer[n] = 1.0;
         }
     }
 }

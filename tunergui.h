@@ -9,6 +9,7 @@
 #include <fftw3.h>
 
 #include "lauaudioobject.h"
+#include "lauplotwidget.h"
 #include "laufftobject.h"
 
 using namespace std;
@@ -26,8 +27,6 @@ public:
     explicit TunerGUI(QWidget *parent = 0);
     ~TunerGUI();
 
-    void setupPlot();
-    void plotPSD();
     QVector<float> getFFT();
     float *getWindowFunc();
     float getPitch();
@@ -47,6 +46,8 @@ private:
     Ui::TunerGUI *ui;
     LAUAudioObject *object;
     LAUFFTObject *fftObject;
+    LAUPlotWidget *rawWidget;
+    LAUPlotWidget *psdWidget;
     float *inputBuffer;
     int samplesFromMic;
     double *FFTdata;

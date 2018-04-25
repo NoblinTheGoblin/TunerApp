@@ -86,7 +86,7 @@ void LAUAudioObject::onStart()
 
         audioInput = new QAudioInput(format);         // CREATE OUR AUDIO INPUT OBJECT
         audioInput->setBufferSize(44100);             // SET THE INPUT OBJECT'S BUFFER SIZE
-        audioInput->setNotifyInterval(50);            // SET THE INPUT OBJECT'S NOTIFY RATE
+        audioInput->setNotifyInterval(1000);          // SET THE INPUT OBJECT'S NOTIFY RATE
 
         // CONNECT THE AUDIO INPUTS NOTIFY SIGNAL TO THIS CLASS'S NOTIFY SLOT
         //connect(audioInput, SIGNAL(notify()), this, SLOT(onNotify()));
@@ -129,6 +129,7 @@ void LAUAudioObject::onNotify()
         while ((bufferOtPointer + windowSize) < bufferInPointer) {
             emit emitUpdateBuffer(&buffer[bufferOtPointer], windowSize);
             bufferOtPointer += windowSize;
+            bufferOtPointer = bufferInPointer;
         }
 
         // NOW DECIDE IF WE NEED TO WRITE INCOMING SAMPLES BACK TO THE BEGINNING OF THE RECORDING BUFFER

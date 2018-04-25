@@ -24,12 +24,14 @@ SOURCES  += main.cpp\
             tunergui.cpp \
             qcustomplot.cpp \
             lauaudioobject.cpp \
-    laufftobject.cpp
+    laufftobject.cpp \
+    lauplotwidget.cpp
 
 HEADERS  += tunergui.h \
             qcustomplot.h \
             lauaudioobject.h \
-    laufftobject.h
+    laufftobject.h \
+    lauplotwidget.h
 
 FORMS    += tunergui.ui
 

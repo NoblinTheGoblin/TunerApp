@@ -12,45 +12,23 @@ TunerGUI::TunerGUI(QWidget *parent) : QWidget(parent), ui(new Ui::TunerGUI), obj
     fftObject->setWindow(LAUFFTObject::WindowOne);
     fftObject->setWindowSize(1024);
 
-    connect(object, SIGNAL(emitUpdateBuffer(float *, int)), fftObject, SLOT(onUpdateBuffer(float *, int)));
-    connect(fftObject, SIGNAL(emitUpdateBuffer(float *, int)), this, SLOT(onUpdateBuffer(float *, int)));
+    rawWidget = new LAUPlotWidget(LAUPlotWidget::StyleRaw);
+    rawWidget->setWindowSize(1024);
+    ui->rawAudioGroupBox->layout()->addWidget(rawWidget);
+
+    psdWidget = new LAUPlotWidget(LAUPlotWidget::StylePSD);
+    psdWidget->setWindowSize(1024);
+    ui->psdAudioGroupBox->layout()->addWidget(psdWidget);
+
+    connect(object, SIGNAL(emitUpdateBuffer(float *, int)), rawWidget, SLOT(onUpdateBuffer(float *, int)));
+    connect(rawWidget, SIGNAL(emitUpdateBuffer(float *, int)), fftObject, SLOT(onUpdateBuffer(float *, int)));
+    connect(fftObject, SIGNAL(emitUpdateBuffer(float *, int)), psdWidget, SLOT(onUpdateBuffer(float *, int)));
+    connect(psdWidget, SIGNAL(emitUpdateBuffer(float *, int)), this, SLOT(onUpdateBuffer(float *, int)));
 }
 
 TunerGUI::~TunerGUI()
 {
     delete ui;
-}
-
-void TunerGUI::setupPlot()
-{
-    ui->InputGraph->addGraph();
-    ui->PSDGraph->addGraph();
-
-    ui->InputGraph->xAxis->setRange(0, 1025);
-    ui->InputGraph->yAxis->setRange(-2, 2);
-
-    ui->PSDGraph->xAxis->setRange(0, 1024);
-    ui->PSDGraph->yAxis->setRange(0, 3);
-
-
-    QVector<double> time(1024);
-
-    for (int i = 0; i < 1024; i++) {
-        time[i] = i;
-    }
-
-    //ui->InputGraph->graph(0)->setData(time, windowedData);
-}
-
-void TunerGUI::plotPSD()
-{
-    vector<double> windowedBuffer;
-    windowedBuffer.assign((double *)windowedInput, (double *)windowedInput + 1024);
-    windowedData.fromStdVector(windowedBuffer);
-
-    //qDebug() << windowed[windowSize/2-1];
-
-    //ui->PSDGraph->graph(0)->setData(time, PSD);
 }
 
 QVector<float> TunerGUI::getFFT()
@@ -82,11 +60,6 @@ float *TunerGUI::getWindowFunc()
 void TunerGUI::onUpdateBuffer(float *buffer, int samples)
 {
     qDebug() << "LOVE IT" << samples;
-    inputBuffer = buffer;
-    samplesFromMic = samples;
-
-    setupPlot();
-    ui->InputGraph->replot();
 }
 
 float TunerGUI::getPitch()
