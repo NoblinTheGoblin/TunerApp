@@ -33,12 +33,12 @@ TunerGUI::~TunerGUI()
 
 void TunerGUI::on_windowFunctionComboBox_currentIndexChanged(QString string)
 {
-    if (string == QString("Function A")) {
-        fftObject->setWindow(LAUFFTObject::WindowOne);
-    } else if (string == QString("Function B")) {
-        fftObject->setWindow(LAUFFTObject::WindowTwo);
-    } else if (string == QString("Function C")) {
-        fftObject->setWindow(LAUFFTObject::WindowThree);
+    if (string == QString("Rectangular")) {
+        fftObject->setWindow(LAUFFTObject::Rectangular);
+    } else if (string == QString("Hann")) {
+        fftObject->setWindow(LAUFFTObject::Hann);
+    } else if (string == QString("Hamming")) {
+        fftObject->setWindow(LAUFFTObject::Hamming);
     }
 }
 
