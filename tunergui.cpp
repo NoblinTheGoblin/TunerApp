@@ -31,6 +31,29 @@ TunerGUI::~TunerGUI()
     delete ui;
 }
 
+void TunerGUI::on_windowFunctionComboBox_currentIndexChanged(QString string)
+{
+    if (string == QString("Function A")) {
+        fftObject->setWindow(LAUFFTObject::WindowOne);
+    } else if (string == QString("Function B")) {
+        fftObject->setWindow(LAUFFTObject::WindowTwo);
+    } else if (string == QString("Function C")) {
+        fftObject->setWindow(LAUFFTObject::WindowThree);
+    }
+}
+
+void TunerGUI::on_windowSizeComboBox_currentIndexChanged(QString string)
+{
+    bool okay = false;
+    int val = string.toInt(&okay);
+    if (okay) {
+        object->setWindowSize(val);
+        fftObject->setWindowSize(val);
+        rawWidget->setWindowSize(val);
+        psdWidget->setWindowSize(val);
+    }
+}
+
 QVector<float> TunerGUI::getFFT()
 {
     float *outputBuffer;

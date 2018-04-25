@@ -34,6 +34,9 @@ public:
 public slots:
     void onUpdateBuffer(float *buffer, int samples);
 
+    void on_windowFunctionComboBox_currentIndexChanged(QString string);
+    void on_windowSizeComboBox_currentIndexChanged(QString string);
+
 protected:
     void showEvent(QShowEvent *)
     {
