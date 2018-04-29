@@ -37,8 +37,8 @@ LAUPlotWidget::LAUPlotWidget(Style stl, QWidget *parent) : QWidget(parent), styl
         plot->yAxis2->setVisible(true);
         plot->yAxis->setRangeReversed(false);
         plot->yAxis2->setRangeReversed(false);
-        plot->yAxis->setRange(-100, 100);
-        plot->yAxis2->setRange(-100, 100);
+        plot->yAxis->setRange(0, 100);
+        plot->yAxis2->setRange(0, 100);
         plot->yAxis->setScaleType(QCPAxis::stLogarithmic);
         plot->yAxis2->setScaleType(QCPAxis::stLogarithmic);
         plot->yAxis->setTicker(logTicker);
