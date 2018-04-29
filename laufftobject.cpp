@@ -1,74 +1,82 @@
-#include "laufftobject.h"
+#include "lauplotwidget.h"
 
-LAUFFTObject::LAUFFTObject(int smpls, Window wnd, QObject *parent) : QObject(parent), windowSize(smpls), window(wnd)
+LAUPlotWidget::LAUPlotWidget(Style stl, QWidget *parent) : QWidget(parent), style(stl), windowSize(512)
 {
-    dBuffer = (double *)malloc(LAUFFTOBJECTMAXWINDOWSIZE * sizeof(double));
-    memset(dBuffer, LAUFFTOBJECTMAXWINDOWSIZE * sizeof(double), 0);
+    this->setLayout(new QVBoxLayout());
+    this->layout()->setContentsMargins(0, 0, 0, 0);
 
-    wBuffer = (double *)malloc(LAUFFTOBJECTMAXWINDOWSIZE * sizeof(double));
-    memset(wBuffer, LAUFFTOBJECTMAXWINDOWSIZE * sizeof(double), 0);
-}
+    plot = new QCustomPlot();
+    this->layout()->addWidget(plot);
 
-LAUFFTObject::~LAUFFTObject()
-{
-    if (dBuffer) {
-        free(dBuffer);
+    if (style == StyleRaw) {
+        // SET AXES FOR SHOWING DENSITIES
+        plot->xAxis->setLabel("Time [n]");
+        plot->xAxis2->setVisible(true);
+        plot->xAxis->setRange(0, windowSize);
+        plot->xAxis2->setRange(0, windowSize);
+
+        plot->yAxis->setLabel("Raw Audio Signal");
+        plot->yAxis2->setVisible(true);
+        plot->yAxis->setRangeReversed(false);
+        plot->yAxis2->setRangeReversed(false);
+        plot->yAxis->setRange(-2, 2);
+        plot->yAxis2->setRange(-2, 2);
+    } else if (style == StylePSD) {
+        // SET AXES FOR SHOWING DENSITIES
+        plot->xAxis->setLabel("Frequency [k]");
+        plot->xAxis2->setVisible(true);
+        plot->xAxis->setRange(0, windowSize);
+        plot->xAxis2->setRange(0, windowSize);
+        plot->xAxis->setScaleType(QCPAxis::stLogarithmic);
+        plot->xAxis2->setScaleType(QCPAxis::stLogarithmic);
+        QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
+        plot->xAxis->setTicker(logTicker);
+        plot->xAxis2->setTicker(logTicker);
+
+        plot->yAxis->setLabel("PSD Audio Signal");
+        plot->yAxis2->setVisible(true);
+        plot->yAxis->setRangeReversed(false);
+        plot->yAxis2->setRangeReversed(false);
+        plot->yAxis->setRange(-100, 100);
+        plot->yAxis2->setRange(-100, 100);
+        plot->yAxis->setScaleType(QCPAxis::stLogarithmic);
+        plot->yAxis2->setScaleType(QCPAxis::stLogarithmic);
+        plot->yAxis->setTicker(logTicker);
+        plot->yAxis2->setTicker(logTicker);
     }
 
-    if (wBuffer) {
-        free(wBuffer);
-    }
+    // CREATE THE GRAPH INSIDE THE PLOT OBJECT AND SET THE PEN STYLE
+    plot->addGraph();
+    plot->graph(0)->setPen(QPen(Qt::red));
+    plot->graph(0)->setLineStyle(QCPGraph::lsLine);
 }
 
-void LAUFFTObject::setWindow(Window wnd)
+void LAUPlotWidget::onUpdateBuffer(float *buffer, int samples)
 {
-    // STORE THE WINDOW FUNCTION NAME
-    window = wnd;
-
-    // STORE THE CURRENT WINDOW IN THE WINDOW BUFFER
-    if (window == Rectangular) {
-        for (int n = 0; n < windowSize; n++) {
-            wBuffer[n] = 1.0;
+    // MAKE SURE WE HAVE AN EXISTING X AND Y VECTOR AND THAT
+    // BOTH CAN HOLD THE INCOMING SAMPLES
+    if (x.size() != samples) {
+        x.resize(samples);
+        for (int n = 0; n < samples; n++) {
+            x[n] = (double)n;
         }
-    } else if (window == Hann) {
-        for (int n = 0; n < windowSize; n++) {
-            wBuffer[n] = 0.5*(1-cos((2*M_PI*n)/(windowSize - 1)));
-        }
-    } else if (window == Hamming) {
-        for (int n = 0; n < windowSize; n++) {
-            wBuffer[n] = 0.54 + 0.46*cos((2*M_PI*n)/(windowSize-1));
-        }
-    }
-}
-
-void LAUFFTObject::setWindowSize(int val)
-{
-    // SAVE THE NEW WINDOW SIZE HERE
-    windowSize = val;
-
-    // NOW CALL THE WINDOW FUNCTION SO THAT WE HAVE THE NEW SIZED WINDOW
-    setWindow(window);
-}
-
-void LAUFFTObject::onUpdateBuffer(float *buffer, int samples)
-{
-    // COPY THE CURRENT WINDOW INTO OUR DATA BUFFER
-    for (int n = 0; n < qMin(samples, windowSize); n++) {
-        dBuffer[n] = (double)buffer[n] * wBuffer[n];
+        plot->xAxis->setRange(0, samples);
+        plot->xAxis2->setRange(0, samples);
     }
 
-    //EXECUTE FFT ON DATA BUFFER
-    fftw_plan p;
-    p = fftw_plan_r2r_1d(samples, dBuffer, dBuffer, FFTW_R2HC, FFTW_ESTIMATE);
-    fftw_execute(p);
-    fftw_destroy_plan(p);
-
-
-
-    // COPY THE FFT COEFFICIENTS BACK TO OUR BUFFER
-    for (int n = 0; n < qMin(samples, windowSize); n++) {
-        buffer[n] = (float)dBuffer[n] * (float)dBuffer[n];
+    if (y.size() != samples) {
+        y.resize(samples);
     }
 
+    // COPY THE INCOMING SAMPLES OVER TO OUR DOUBLE VECTOR FOR PLOTTING
+    for (int n = 0; n < samples; n++) {
+        y[n] = (double)buffer[n];
+    }
+
+    // CALL THE PLOT FUNCTION TO DISPLAY ON SCREEN
+    plot->graph(0)->setData(x, y);
+    plot->replot();
+
+    // EMIT THE BUFFER TO THE NEXT STAGE OF PROCESSING
     emit emitUpdateBuffer(buffer, samples);
 }
