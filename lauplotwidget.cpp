@@ -19,21 +19,30 @@ LAUPlotWidget::LAUPlotWidget(Style stl, QWidget *parent) : QWidget(parent), styl
         plot->yAxis2->setVisible(true);
         plot->yAxis->setRangeReversed(false);
         plot->yAxis2->setRangeReversed(false);
-        plot->yAxis->setRange(-0.2, 0.2);
-        plot->yAxis2->setRange(-0.2, 0.2);
+        plot->yAxis->setRange(-2, 2);
+        plot->yAxis2->setRange(-2, 2);
     } else if (style == StylePSD) {
         // SET AXES FOR SHOWING DENSITIES
         plot->xAxis->setLabel("Frequency [k]");
         plot->xAxis2->setVisible(true);
         plot->xAxis->setRange(0, windowSize);
         plot->xAxis2->setRange(0, windowSize);
+        plot->xAxis->setScaleType(QCPAxis::stLogarithmic);
+        plot->xAxis2->setScaleType(QCPAxis::stLogarithmic);
+        QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
+        plot->xAxis->setTicker(logTicker);
+        plot->xAxis2->setTicker(logTicker);
 
         plot->yAxis->setLabel("PSD Audio Signal");
         plot->yAxis2->setVisible(true);
         plot->yAxis->setRangeReversed(false);
         plot->yAxis2->setRangeReversed(false);
-        plot->yAxis->setRange(-0.2, 0.2);
-        plot->yAxis2->setRange(-0.2, 0.2);
+        plot->yAxis->setRange(-100, 100);
+        plot->yAxis2->setRange(-100, 100);
+        plot->yAxis->setScaleType(QCPAxis::stLogarithmic);
+        plot->yAxis2->setScaleType(QCPAxis::stLogarithmic);
+        plot->yAxis->setTicker(logTicker);
+        plot->yAxis2->setTicker(logTicker);
     }
 
     // CREATE THE GRAPH INSIDE THE PLOT OBJECT AND SET THE PEN STYLE
