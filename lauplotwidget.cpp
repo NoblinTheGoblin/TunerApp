@@ -25,8 +25,8 @@ LAUPlotWidget::LAUPlotWidget(Style stl, QWidget *parent) : QWidget(parent), styl
         // SET AXES FOR SHOWING DENSITIES
         plot->xAxis->setLabel("Frequency [k]");
         plot->xAxis2->setVisible(true);
-        plot->xAxis->setRange(0, windowSize);
-        plot->xAxis2->setRange(0, windowSize);
+        plot->xAxis->setRange(1, windowSize);
+        plot->xAxis2->setRange(1, windowSize);
         plot->xAxis->setScaleType(QCPAxis::stLogarithmic);
         plot->xAxis2->setScaleType(QCPAxis::stLogarithmic);
         QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
@@ -37,8 +37,8 @@ LAUPlotWidget::LAUPlotWidget(Style stl, QWidget *parent) : QWidget(parent), styl
         plot->yAxis2->setVisible(true);
         plot->yAxis->setRangeReversed(false);
         plot->yAxis2->setRangeReversed(false);
-        plot->yAxis->setRange(0, 100);
-        plot->yAxis2->setRange(0, 100);
+        plot->yAxis->setRange(0.0001, 10);
+        plot->yAxis2->setRange(0.0001, 10);
         plot->yAxis->setScaleType(QCPAxis::stLogarithmic);
         plot->yAxis2->setScaleType(QCPAxis::stLogarithmic);
         plot->yAxis->setTicker(logTicker);
@@ -60,8 +60,13 @@ void LAUPlotWidget::onUpdateBuffer(float *buffer, int samples)
         for (int n = 0; n < samples; n++) {
             x[n] = (double)n;
         }
-        plot->xAxis->setRange(0, samples);
-        plot->xAxis2->setRange(0, samples);
+        if (style == StyleRaw) {
+            plot->xAxis->setRange(0, samples);
+            plot->xAxis2->setRange(0, samples);
+        } else if (style == StylePSD) {
+            plot->xAxis->setRange(100, samples);
+            plot->xAxis2->setRange(100, samples);
+        }
     }
 
     if (y.size() != samples) {

@@ -27,10 +27,6 @@ public:
     explicit TunerGUI(QWidget *parent = 0);
     ~TunerGUI();
 
-    QVector<float> getFFT();
-    float *getWindowFunc();
-    float getPitch();
-
 public slots:
     void onUpdateBuffer(float *buffer, int samples);
 

@@ -9,7 +9,7 @@ TunerGUI::TunerGUI(QWidget *parent) : QWidget(parent), ui(new Ui::TunerGUI), obj
     object->setWindowSize(1024);
 
     fftObject = new LAUFFTObject();
-    fftObject->setWindow(LAUFFTObject::WindowOne);
+    fftObject->setWindow(LAUFFTObject::Hamming);
     fftObject->setWindowSize(1024);
 
     rawWidget = new LAUPlotWidget(LAUPlotWidget::StyleRaw);
@@ -67,38 +67,7 @@ void TunerGUI::on_windowSizeComboBox_currentIndexChanged(QString string)
     }
 }
 
-QVector<float> TunerGUI::getFFT()
-{
-    float *outputBuffer;
-    float *PSD;
-
-    fftw_plan p;
-
-    p = fftw_plan_r2r_1d(1024, (double *)windowedInput, (double *)FFTdata, FFTW_R2HC, FFTW_ESTIMATE);
-
-    fftw_execute(p);
-
-    //for(int i = 0; i < (1024/2 + 1); i++){
-    //PSD[i] = (outputBuffer[i]*outputBuffer[i] + outputBuffer[1024/2 +1 -i] * outputBuffer[1024/2 +1 -i]);
-    //}
-
-}
-
-float *TunerGUI::getWindowFunc()
-{
-    int windowSize = 1024;
-
-    for (int i = 0; i < windowSize; i++) {
-        windowedInput[i] = 0.5 * (1 - qCos((i * 2 * M_PI) / 1023)) * (double)inputBuffer[i];
-    }
-}
-
 void TunerGUI::onUpdateBuffer(float *buffer, int samples)
 {
     qDebug() << "LOVE IT" << samples;
-}
-
-float TunerGUI::getPitch()
-{
-
 }

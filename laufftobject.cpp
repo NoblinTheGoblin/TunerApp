@@ -28,15 +28,15 @@ void LAUFFTObject::setWindow(Window wnd)
     // STORE THE CURRENT WINDOW IN THE WINDOW BUFFER
     if (window == Rectangular) {
         for (int n = 0; n < windowSize; n++) {
-            wBuffer[n] = 1.0;
+            wBuffer[n] = 20.0;
         }
     } else if (window == Hann) {
         for (int n = 0; n < windowSize; n++) {
-            wBuffer[n] = 0.5*(1-cos((2*M_PI*n)/(windowSize - 1)));
+            wBuffer[n] = 20.0 * (0.5 * (1 - cos((2 * M_PI * n) / (windowSize - 1))));
         }
     } else if (window == Hamming) {
         for (int n = 0; n < windowSize; n++) {
-            wBuffer[n] = 0.54 + 0.46*cos((2*M_PI*n)/(windowSize-1));
+            wBuffer[n] = 20.0 * (0.54 + 0.46 * cos((2 * M_PI * n) / (windowSize - 1)));
         }
     }
 }
@@ -67,7 +67,7 @@ void LAUFFTObject::onUpdateBuffer(float *buffer, int samples)
 
     // COPY THE FFT COEFFICIENTS BACK TO OUR BUFFER
     for (int n = 0; n < qMin(samples, windowSize); n++) {
-        buffer[n] = ((float)dBuffer[n] *(float)dBuffer[n])/samples;
+        buffer[n] = ((float)dBuffer[n] * (float)dBuffer[n]) / samples;
     }
 
     emit emitUpdateBuffer(buffer, samples);
