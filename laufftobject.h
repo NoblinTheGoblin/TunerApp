@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <fftw3.h>
+#include <math.h>
 
 #define LAUFFTOBJECTMAXWINDOWSIZE 4096
 
@@ -11,8 +12,8 @@ class LAUFFTObject : public QObject
     Q_OBJECT
 
 public:
-    enum Window { WindowOne, WindowTwo, WindowThree };
-    explicit LAUFFTObject(int smpls = 512, Window wnd = WindowOne, QObject *parent = nullptr);
+    enum Window { Rectangular, Hann, Hamming };
+    explicit LAUFFTObject(int smpls = 512, Window wnd = Rectangular, QObject *parent = nullptr);
     ~LAUFFTObject();
 
     void setWindow(Window wnd);

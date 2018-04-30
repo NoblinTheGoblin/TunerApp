@@ -12,32 +12,37 @@ LAUPlotWidget::LAUPlotWidget(Style stl, QWidget *parent) : QWidget(parent), styl
         // SET AXES FOR SHOWING DENSITIES
         plot->xAxis->setLabel("Time [n]");
         plot->xAxis2->setVisible(true);
+        plot->xAxis->setRange(0, windowSize);
+        plot->xAxis2->setRange(0, windowSize);
 
         plot->yAxis->setLabel("Raw Audio Signal");
         plot->yAxis2->setVisible(true);
         plot->yAxis->setRangeReversed(false);
         plot->yAxis2->setRangeReversed(false);
-        plot->yAxis->setRange(-0.2, 0.2);
-        plot->yAxis2->setRange(-0.2, 0.2);
+        plot->yAxis->setRange(-2, 2);
+        plot->yAxis2->setRange(-2, 2);
     } else if (style == StylePSD) {
         // SET AXES FOR SHOWING DENSITIES
-        plot->xAxis->setLabel("Frequency (Hz)");
+        plot->xAxis->setLabel("Frequency [k]");
         plot->xAxis2->setVisible(true);
         plot->xAxis->setRange(0, windowSize);
         plot->xAxis2->setRange(0, windowSize);
         plot->xAxis->setScaleType(QCPAxis::stLogarithmic);
         plot->xAxis2->setScaleType(QCPAxis::stLogarithmic);
-
-        QSharedPointer<QCPAxisTickerLog> logXTicker(new QCPAxisTickerLog);
-        plot->xAxis->setTicker(logXTicker);
-        plot->xAxis2->setTicker(logXTicker);
+        QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
+        plot->xAxis->setTicker(logTicker);
+        plot->xAxis2->setTicker(logTicker);
 
         plot->yAxis->setLabel("PSD Audio Signal");
         plot->yAxis2->setVisible(true);
         plot->yAxis->setRangeReversed(false);
         plot->yAxis2->setRangeReversed(false);
-        plot->yAxis->setRange(-0.2, 0.2);
-        plot->yAxis2->setRange(-0.2, 0.2);
+        plot->yAxis->setRange(0, 100);
+        plot->yAxis2->setRange(0, 100);
+        plot->yAxis->setScaleType(QCPAxis::stLogarithmic);
+        plot->yAxis2->setScaleType(QCPAxis::stLogarithmic);
+        plot->yAxis->setTicker(logTicker);
+        plot->yAxis2->setTicker(logTicker);
     }
 
     // CREATE THE GRAPH INSIDE THE PLOT OBJECT AND SET THE PEN STYLE
@@ -52,17 +57,11 @@ void LAUPlotWidget::onUpdateBuffer(float *buffer, int samples)
     // BOTH CAN HOLD THE INCOMING SAMPLES
     if (x.size() != samples) {
         x.resize(samples);
-        if (style == StyleRaw) {
-            for (int n = 0; n < samples; n++) {
-                x[n] = (double)n;
-            }
-        } else if (style == StylePSD) {
-            for (int n = 0; n < samples; n++) {
-                x[n] = 44100.0 * (double)n / (double)samples;
-            }
+        for (int n = 0; n < samples; n++) {
+            x[n] = (double)n;
         }
-        plot->xAxis->setRange(0, x[samples - 1]);
-        plot->xAxis2->setRange(0, x[samples - 1]);
+        plot->xAxis->setRange(0, samples);
+        plot->xAxis2->setRange(0, samples);
     }
 
     if (y.size() != samples) {
