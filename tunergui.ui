@@ -68,17 +68,17 @@
        <widget class="QComboBox" name="windowFunctionComboBox">
         <item>
          <property name="text">
-          <string>Function A</string>
+          <string>Rectangular</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Function B</string>
+          <string>Hann</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Function C</string>
+          <string>Hamming</string>
          </property>
         </item>
        </widget>
