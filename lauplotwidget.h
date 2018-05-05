@@ -26,7 +26,7 @@ public slots:
 private:
     Style style;
     QCustomPlot *plot;
-    QVector<double> x, y;
+    QVector<double> x, y, x2;
     int windowSize;
 
 signals:
