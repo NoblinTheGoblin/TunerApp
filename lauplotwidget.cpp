@@ -57,15 +57,17 @@ void LAUPlotWidget::onUpdateBuffer(float *buffer, int samples)
     // BOTH CAN HOLD THE INCOMING SAMPLES
     if (x.size() != samples) {
         x.resize(samples);
+        x2.resize(samples);
         for (int n = 0; n < samples; n++) {
             x[n] = (double)n;
+            x2[n] = (double)(44100 * n/samples);
         }
         if (style == StyleRaw) {
             plot->xAxis->setRange(0, samples);
             plot->xAxis2->setRange(0, samples);
         } else if (style == StylePSD) {
-            plot->xAxis->setRange(100, samples);
-            plot->xAxis2->setRange(100, samples);
+            plot->xAxis->setRange(10, 44100/2);
+            plot->xAxis2->setRange(10, 44100/2);
         }
     }
 
@@ -79,7 +81,12 @@ void LAUPlotWidget::onUpdateBuffer(float *buffer, int samples)
     }
 
     // CALL THE PLOT FUNCTION TO DISPLAY ON SCREEN
-    plot->graph(0)->setData(x, y);
+    if (style == StyleRaw) {
+        plot->graph(0)->setData(x, y);
+    } else if (style == StylePSD) {
+        plot->graph(0)->setData(x2, y);
+    }
+
     plot->replot();
 
     // EMIT THE BUFFER TO THE NEXT STAGE OF PROCESSING
